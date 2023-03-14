@@ -970,25 +970,27 @@ module.exports = {
       const node = {
         type: "string",
       };
+      if (typeof shortDefinition === "string") {
+        let params = shortDefinition.split('|');
+        params = params.map(v => v.trim());
 
-      let params = shortDefinition.split('|');
-      params = params.map(v => v.trim());
+        if (params.includes('optional')) {
+          node.optional = true;
+        }
 
-      if (params.includes('optional')) {
-        node.optional = true;
-      }
-
-      for (const type of Object.values(NODE_TYPES)) {
-        if (params.includes(type)) {
-          node.type = type;
-          break;
-        } else if (params.includes(`${type}[]`)) {
-          const [arrayType,] = node.type.split("[");
-          node.type = "array";
-          node.items = arrayType;
-          break;
+        for (const type of Object.values(NODE_TYPES)) {
+          if (params.includes(type)) {
+            node.type = type;
+            break;
+          } else if (params.includes(`${type}[]`)) {
+            const [arrayType,] = node.type.split("[");
+            node.type = "array";
+            node.items = arrayType;
+            break;
+          }
         }
       }
+
 
       return node;
     },
